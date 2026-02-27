@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EspSmartGate | Team Tróia</title>
     <style>
         :root {
-            --primary: #00ff00; /* Verde Tróia */
-            --bg: #000000;      /* Preto */
+            --primary: #00ff00;
+            /* Verde Tróia */
+            --bg: #000000;
+            /* Preto */
             --card-bg: rgba(20, 20, 20, 0.9);
             --text: #ffffff;
         }
@@ -38,14 +41,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px; /* Espaço entre logo e texto */
+            gap: 15px;
+            /* Espaço entre logo e texto */
             margin-bottom: 2rem;
             border-bottom: 1px solid rgba(0, 255, 0, 0.3);
             padding-bottom: 15px;
         }
 
         .logo-img {
-            width: 60px; /* Tamanho ajustado para ficar na linha */
+            width: 60px;
+            /* Tamanho ajustado para ficar na linha */
             height: auto;
         }
 
@@ -101,6 +106,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="login-card">
         <div class="header-row">
@@ -110,11 +116,12 @@
                 <p class="subtitle">Acesso Restrito - Team Tróia</p>
             </div>
         </div>
-        
+
         <form action="/login" method="POST">
             <input type="password" name="adminPassword" placeholder="Chave de Acesso" required>
             <button type="submit">Entrar</button>
         </form>
     </div>
 </body>
+
 </html>

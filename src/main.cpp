@@ -1,25 +1,23 @@
-#include "constants.h"
 #include <Arduino.h>
-#include "env.h"
-#include "WebManager.h"
 
+#include "WebManager.h"
+#include "constants.h"
+#include "env.h"
 
 // Instancia usando as constantes do arquivo Env.h
 WebManager webManager(AP_SSID, AP_PASSWORD);
 
 void setup() {
   Serial.begin(115200);
-  delay(2000); 
+  delay(2000);
 
-  neopixelWrite(LED_PIN, 0, 50, 0); 
+  neopixelWrite(LED_PIN, 0, 50, 0);
   delay(500);
-  neopixelWrite(LED_PIN, 0, 0, 0);  
+  neopixelWrite(LED_PIN, 0, 0, 0);
 
   Serial.println("\n--- EspSmartGate Iniciando ---");
 
   webManager.begin();
 }
 
-void loop() {
-  delay(100); 
-}
+void loop() { delay(100); }
