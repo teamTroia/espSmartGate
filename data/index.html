@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EspSmartGate | Team Tróia</title>
+    <style>
+        :root {
+            --primary: #00ff00; /* Verde Tróia */
+            --bg: #000000;      /* Preto */
+            --card-bg: rgba(20, 20, 20, 0.9);
+            --text: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at center, #0a2e0a, var(--bg));
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text);
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            border: 1px solid var(--primary);
+            padding: 2rem;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+        }
+
+        /* Estrutura de "Tabela" (Linha) */
+        .header-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px; /* Espaço entre logo e texto */
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.3);
+            padding-bottom: 15px;
+        }
+
+        .logo-img {
+            width: 60px; /* Tamanho ajustado para ficar na linha */
+            height: auto;
+        }
+
+        .title-group {
+            text-align: left;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            margin: 0;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+
+        p.subtitle {
+            font-size: 0.8rem;
+            margin: 0;
+            color: #888;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background: #111;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary);
+            color: black;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #00cc00;
+            box-shadow: 0 0 15px var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="header-row">
+            <img src="icon.png" alt="Logo" class="logo-img">
+            <div class="title-group">
+                <h1>Esp Smart Gate</h1>
+                <p class="subtitle">Acesso Restrito - Team Tróia</p>
+            </div>
+        </div>
+        
+        <form action="/login" method="POST">
+            <input type="password" name="adminPassword" placeholder="Chave de Acesso" required>
+            <button type="submit">Entrar</button>
+        </form>
+    </div>
+</body>
+</html>

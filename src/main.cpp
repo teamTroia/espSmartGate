@@ -1,27 +1,25 @@
-#include "../include/libs.h"
-#include "../include/defines.h"
+#include "constants.h"
+#include <Arduino.h>
+#include "env.h"
+#include "WebManager.h"
+
+
+// Instancia usando as constantes do arquivo Env.h
+WebManager webManager(AP_SSID, AP_PASSWORD);
 
 void setup() {
   Serial.begin(115200);
-  delay(1000);
-  Serial.println("Iniciando teste do LED RGB (WS2812)...");
+  delay(2000); 
+
+  neopixelWrite(LED_PIN, 0, 50, 0); 
+  delay(500);
+  neopixelWrite(LED_PIN, 0, 0, 0);  
+
+  Serial.println("\n--- EspSmartGate Iniciando ---");
+
+  webManager.begin();
 }
 
 void loop() {
-  
-  Serial.println("Cor: Vermelho");
-  neopixelWrite(RGB_BUILTIN, 50, 0, 0); 
-  delay(1000);
-
-  Serial.println("Cor: Verde");
-  neopixelWrite(RGB_BUILTIN, 0, 50, 0); 
-  delay(1000);
-
-  Serial.println("Cor: Azul");
-  neopixelWrite(RGB_BUILTIN, 0, 0, 50); 
-  delay(1000);
-
-  Serial.println("Cor: Desligado");
-  neopixelWrite(RGB_BUILTIN, 0, 0, 0); 
-  delay(1000);
+  delay(100); 
 }

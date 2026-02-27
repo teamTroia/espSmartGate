@@ -32,11 +32,12 @@ O objetivo deste repositório é desenvolver o firmware para uma tranca eletrôn
 O projeto está em fase inicial de estruturação. Arquitetura de hardware, esquemáticos e dependências de software serão documentados aqui conforme o avanço do desenvolvimento.
 
 ### 📝 Roadmap Inicial
-- [ ] Configuração do ambiente base (PlatformIO)
-- [ ] Subida do modo Access Point (AP) e Web Server Assíncrono
+- [X] Configuração do ambiente base (PlatformIO)
+- [X] Subida do modo Access Point (AP) e Web Server Assíncrono
 - [ ] Integração do hardware de leitura RFID
 - [ ] Implementação do banco de dados local (LittleFS)
 - [ ] Rotina de sincronização na nuvem (Store & Forward)
+- [ ] Módulo OTA
 
 
 
