@@ -5,15 +5,17 @@
 #include <ESPAsyncWebServer.h>
 #include <WiFi.h>
 
+#include "UserManager.h"
 class WebManager {
  private:
   AsyncWebServer server;
   const char* ssid;
   const char* password;
+  UserManager* userManager;
 
  public:
-  // Construtor usando camelCase nos parâmetros
-  WebManager(const char* apSsid, const char* apPassword);
+
+  WebManager(const char* ssid, const char* pass, UserManager* userMgr);
 
   // Método de inicialização
   void begin();

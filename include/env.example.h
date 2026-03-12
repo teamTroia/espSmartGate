@@ -4,7 +4,9 @@
 #define ENV_H
 
 // Credenciais do Access Point
-#define AP_SSID "Nome_da_Rede"
-#define AP_PASSWORD "Senha_da_Rede"
+#define AP_SSID "NomeDaRede"
+#define AP_PASSWORD "SenhaDaRede"
+
+#define ADMIN_PASS "senhaAdminGate"
 
 #endif

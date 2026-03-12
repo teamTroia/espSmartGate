@@ -1,0 +1,12 @@
+[
+    {
+        "name": "Admin Tróia",
+        "uid": "12345678",
+        "role": "Master"
+    },
+    {
+        "name": "Membro 01",
+        "uid": "87654321",
+        "role": "User"
+    }
+]
