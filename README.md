@@ -13,12 +13,11 @@ The goal of this repository is to develop the firmware for an autonomous electro
 The project is in its early staging phase. Hardware architecture, schematics, and software dependencies will be documented here as development progresses.
 
 ### 📝 Initial Roadmap
-- [ ] Base environment setup (PlatformIO)
-- [ ] Access Point (AP) and Async Web Server setup
+- [X] Base environment setup (PlatformIO)
+- [X] Access Point (AP) and Async Web Server setup
 - [ ] RFID hardware integration
-- [ ] Local database implementation (LittleFS)
-- [ ] Cloud synchronization routine (Store & Forward)
-
+- [X] Local database implementation (LittleFS)
+- [ ] OTA Module
 ---
 
 # Português
@@ -35,8 +34,7 @@ O projeto está em fase inicial de estruturação. Arquitetura de hardware, esqu
 - [X] Configuração do ambiente base (PlatformIO)
 - [X] Subida do modo Access Point (AP) e Web Server Assíncrono
 - [ ] Integração do hardware de leitura RFID
-- [ ] Implementação do banco de dados local (LittleFS)
-- [ ] Rotina de sincronização na nuvem (Store & Forward)
+- [X] Implementação do banco de dados local (LittleFS)
 - [ ] Módulo OTA
 
 

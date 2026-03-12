@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EspSmartGate | Dashboard</title>
+
+<body>
+    <div class="container">
+        <div class="header-row">
+            <img src="icon.png" alt="Logo" class="logo-img">
+            <div>
+                <h1 style="margin:0; font-size: 1.5rem;">Gerenciamento de Acesso</h1>
+                <span style="color: #666; font-size: 0.8rem;">EspSmartGate v1.0</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Cadastrar Novo Usuário</h2>
+            <form id="userForm" class="form-group">
+                <div>
+                    <input type="text" id="userName" placeholder="Nome do Membro" required>
+                    <input type="text" id="userUID" placeholder="ID da Tag" required>
+                </div>
+                <button type="submit" class="btn">ADICIONAR</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Usuários Cadastrados</h2>
+            <table id="userTable">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>UID Tag</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="userList">
+                </tbody>
+            </table>
+        </div>
+        <div class="header-actions">
+            <h2>Lista de Membros</h2>
+            <button onclick="downloadBackup()" class="btn btn-secondary">
+                📥 Baixar Backup JSON
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // Função para carregar usuários do ESP32
+        async function loadUsers() {
+            try {
+                const response = await fetch('/api/users');
+                const users = await response.json();
+                const list = document.getElementById('userList');
+                list.innerHTML = '';
+
+                users.forEach(user => {
+                    list.innerHTML += `
+                        <tr>
+                            <td>${user.name}</td>
+                            <td><code>${user.uid}</code></td>
+                            <td><button class="btn" style="padding:5px 10px; background:#ff4444;" onclick="removeUser('${user.uid}')">Remover</button></td>
+                        </tr>
+                    `;
+                });
+            } catch (e) { console.error("Erro ao carregar usuários"); }
+        }
+
+        // Evento de Submissão do formulário
+        document.getElementById('userForm').onsubmit = async (e) => {
+            e.preventDefault(); // Impede a página de dar refresh
+
+            const name = document.getElementById('userName').value;
+            const uid = document.getElementById('userUID').value;
+
+            // Criamos os dados para enviar via POST
+            const params = new URLSearchParams();
+            params.append('name', name);
+            params.append('uid', uid);
+
+            try {
+                const response = await fetch('/api/addUser', {
+                    method: 'POST',
+                    body: params
+                });
+
+                if (response.ok) {
+                    alert("Usuário adicionado!");
+                    document.getElementById('userForm').reset();
+                    loadUsers();
+                } else {
+                    alert("Erro ao salvar usuário.");
+                }
+            } catch (err) {
+                console.error("Falha na conexão:", err);
+            }
+        };
+
+        window.onload = loadUsers;
+        function checkAdmin() {
+            document.body.classList.add('is-admin');
+        }
+
+        window.onload = () => {
+            checkAdmin();
+            loadUsers();
+        };
+        async function removeUser(uid) {
+            if (!confirm(`Deseja realmente remover o usuário com UID: ${uid}?`)) return;
+
+            try {
+
+                const formData = new FormData();
+                formData.append('uid', uid);
+
+                const response = await fetch('/api/removeUser', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    alert("Removido com sucesso!");
+                    loadUsers();
+                } else {
+                    alert("Erro ao remover usuário.");
+                }
+            } catch (error) {
+                console.error("Erro na requisição:", error);
+            }
+        }
+        async function downloadBackup() {
+            try {
+                const response = await fetch('/api/users');
+                if (!response.ok) throw new Error('Falha ao buscar dados');
+
+                const data = await response.json();
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+
+                // Cria um link invisível para disparar o download
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+
+                // Nome do arquivo com a data atual para organização
+                const date = new Date().toISOString().split('T')[0];
+                a.download = `backup_usuarios_${date}.json`;
+
+                a.href = url;
+                document.body.appendChild(a);
+                a.click();
+
+                // Limpa a memória
+                window.URL.revokeObjectURL(url);
+                a.remove();
+            } catch (err) {
+                alert("Erro ao gerar backup: " + err.message);
+            }
+        }
+    </script>
+</body>
+<style>
+    :root {
+        --primary: #00ff00;
+        /* Verde Tróia */
+        --bg: #000000;
+        --card-bg: rgba(20, 20, 20, 0.95);
+    }
+
+    #admin-only-card {
+        display: none;
+    }
+
+    .remove-btn {
+        display: none;
+    }
+
+    .is-admin #admin-only-card {
+        display: block;
+    }
+
+    .is-admin .remove-btn {
+        display: inline-block;
+    }
+
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: radial-gradient(circle at center, #0a2e0a, var(--bg));
+        margin: 0;
+        padding: 20px;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 800px;
+    }
+
+    .header-row {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid var(--primary);
+        padding-bottom: 15px;
+    }
+
+    .logo-img {
+        width: 50px;
+        height: auto;
+    }
+
+    .card {
+        background: var(--card-bg);
+        border: 1px solid #333;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+
+    h2 {
+        color: var(--primary);
+        margin-top: 0;
+        font-size: 1.2rem;
+    }
+
+    /* Tabela de Usuários */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    th {
+        text-align: left;
+        border-bottom: 2px solid #333;
+        padding: 10px;
+        color: var(--primary);
+        font-size: 0.9rem;
+    }
+
+    td {
+        padding: 10px;
+        border-bottom: 1px solid #222;
+        font-size: 0.9rem;
+    }
+
+    /* Formulário */
+    .form-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    input {
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #444;
+        background: #111;
+        color: white;
+    }
+
+    input:focus {
+        border-color: var(--primary);
+        outline: none;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        background: var(--primary);
+        color: black;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .btn:hover {
+        box-shadow: 0 0 10px var(--primary);
+        opacity: 0.9;
+    }
+</style>
+</head>
+
+
+
+</html>

@@ -1,13 +1,19 @@
 #include <Arduino.h>
 
+#include "UserManager.h"
 #include "WebManager.h"
 #include "constants.h"
 #include "env.h"
 
+UserManager* userManager;
+
 // Instancia usando as constantes do arquivo Env.h
-WebManager webManager(AP_SSID, AP_PASSWORD);
+WebManager* webManager;
 
 void setup() {
+  userManager = new UserManager();
+  webManager = new WebManager(AP_SSID, AP_PASSWORD, userManager);
+
   Serial.begin(115200);
   delay(2000);
 
@@ -17,7 +23,7 @@ void setup() {
 
   Serial.println("\n--- EspSmartGate Iniciando ---");
 
-  webManager.begin();
+  webManager->begin();
 }
 
 void loop() { delay(100); }
