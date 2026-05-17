@@ -16,6 +16,7 @@ void setup() {
 
   Serial.begin(115200);
   delay(2000);
+  userManager->begin();
 
   neopixelWrite(LED_PIN, 0, 50, 0);
   delay(500);

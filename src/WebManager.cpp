@@ -1,8 +1,5 @@
 #include "WebManager.h"
-
 #include <LittleFS.h>
-
-#include "env.h"
 
 // Inicializa o servidor na porta 80 e define as credenciais
 
@@ -57,7 +54,9 @@ void WebManager::begin() {
 
   // Rota para a página de administração
   server.on("/admin", HTTP_GET, [](AsyncWebServerRequest* request) {
-    // Add verificação de sessão posteriormente
+    if (!request->authenticate(ADMIN_USER, ADMIN_PASS)) {
+      return request->requestAuthentication();
+    }
     request->send(LittleFS, "/admin.html", "text/html");
   });
 
@@ -71,11 +70,17 @@ void WebManager::begin() {
 
   // Rota que retorna os usuarios
   server.on("/api/users", HTTP_GET, [this](AsyncWebServerRequest* request) {
+    if (!request->authenticate(ADMIN_USER, ADMIN_PASS)) {
+      return request->requestAuthentication();
+    }
     request->send(200, "application/json", userManager->getUsersJson());
   });
 
   // Recebe novo usuário e salva no arquivo
   server.on("/api/addUser", HTTP_POST, [this](AsyncWebServerRequest* request) {
+    if (!request->authenticate(ADMIN_USER, ADMIN_PASS)) {
+      return request->requestAuthentication();
+    }
     String name = "";
     String uid = "";
 
@@ -86,8 +91,14 @@ void WebManager::begin() {
       if (p->name() == "uid") uid = p->value();
     }
 
-    // Validação simples: se as strings não estão vazias, prosseguimos
-    if (name != "" && uid != "") {
+    auto isValid = [](const String& s) {
+      if (s.isEmpty() || s.length() > 50) return false;
+      for (char c : s)
+        if (!isAlphaNumeric(c) && c != ' ' && c != '-' && c != '_') return false;
+      return true;
+    };
+
+    if (isValid(name) && isValid(uid)) {
       if (userManager->addUser(name, uid)) {
         request->send(200, "text/plain", "OK");
         Serial.printf("![Web] Sucesso: %s adicionado.\n", name.c_str());
@@ -102,6 +113,9 @@ void WebManager::begin() {
   // Remove o usuário se for autorizado
   server.on("/api/removeUser", HTTP_POST,
             [this](AsyncWebServerRequest* request) {
+              if (!request->authenticate(ADMIN_USER, ADMIN_PASS)) {
+                return request->requestAuthentication();
+              }
               if (request->hasParam("uid", true)) {
                 String uid = request->getParam("uid", true)->value();
 

@@ -51,14 +51,25 @@
     </div>
 
     <script>
-        // Função para carregar usuários do ESP32
+        const authToken = sessionStorage.getItem('authToken');
+
+        if (!authToken) {
+            window.location.href = '/';
+        }
+
+        const authHeader = { 'Authorization': 'Basic ' + authToken };
+
         async function loadUsers() {
             try {
-                const response = await fetch('/api/users');
+                const response = await fetch('/api/users', { headers: authHeader });
+                if (response.status === 401) {
+                    sessionStorage.removeItem('authToken');
+                    window.location.href = '/';
+                    return;
+                }
                 const users = await response.json();
                 const list = document.getElementById('userList');
                 list.innerHTML = '';
-
                 users.forEach(user => {
                     list.innerHTML += `
                         <tr>
@@ -71,24 +82,19 @@
             } catch (e) { console.error("Erro ao carregar usuários"); }
         }
 
-        // Evento de Submissão do formulário
         document.getElementById('userForm').onsubmit = async (e) => {
-            e.preventDefault(); // Impede a página de dar refresh
-
+            e.preventDefault();
             const name = document.getElementById('userName').value;
             const uid = document.getElementById('userUID').value;
-
-            // Criamos os dados para enviar via POST
             const params = new URLSearchParams();
             params.append('name', name);
             params.append('uid', uid);
-
             try {
                 const response = await fetch('/api/addUser', {
                     method: 'POST',
-                    body: params
+                    body: params,
+                    headers: authHeader
                 });
-
                 if (response.ok) {
                     alert("Usuário adicionado!");
                     document.getElementById('userForm').reset();
@@ -101,28 +107,21 @@
             }
         };
 
-        window.onload = loadUsers;
-        function checkAdmin() {
-            document.body.classList.add('is-admin');
-        }
-
         window.onload = () => {
-            checkAdmin();
+            document.body.classList.add('is-admin');
             loadUsers();
         };
+
         async function removeUser(uid) {
             if (!confirm(`Deseja realmente remover o usuário com UID: ${uid}?`)) return;
-
             try {
-
                 const formData = new FormData();
                 formData.append('uid', uid);
-
                 const response = await fetch('/api/removeUser', {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    headers: authHeader
                 });
-
                 if (response.ok) {
                     alert("Removido com sucesso!");
                     loadUsers();
@@ -133,27 +132,20 @@
                 console.error("Erro na requisição:", error);
             }
         }
+
         async function downloadBackup() {
             try {
-                const response = await fetch('/api/users');
+                const response = await fetch('/api/users', { headers: authHeader });
                 if (!response.ok) throw new Error('Falha ao buscar dados');
-
                 const data = await response.json();
                 const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-
-                // Cria um link invisível para disparar o download
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
-
-                // Nome do arquivo com a data atual para organização
                 const date = new Date().toISOString().split('T')[0];
                 a.download = `backup_usuarios_${date}.json`;
-
                 a.href = url;
                 document.body.appendChild(a);
                 a.click();
-
-                // Limpa a memória
                 window.URL.revokeObjectURL(url);
                 a.remove();
             } catch (err) {
