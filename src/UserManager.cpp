@@ -28,7 +28,7 @@ String UserManager::getUsersJson() {
 }
 
 bool UserManager::addUser(String name, String uid) {
-  DynamicJsonDocument doc(2048);
+  JsonDocument doc;
   File file = LittleFS.open(filePath, "r");
 
   if (file) {
@@ -45,7 +45,7 @@ bool UserManager::addUser(String name, String uid) {
     if (user["uid"] == uid) return false;
   }
 
-  JsonObject newUser = array.createNestedObject();
+  JsonObject newUser = array.add<JsonObject>();
   newUser["name"] = name;
   newUser["uid"] = uid;
 
@@ -59,7 +59,7 @@ bool UserManager::addUser(String name, String uid) {
 }
 
 bool UserManager::removeUser(String uid) {
-  DynamicJsonDocument doc(2048);
+  JsonDocument doc;
   File file = LittleFS.open(filePath, "r");
 
   if (!file) return false;

@@ -20,6 +20,13 @@
             <input type="password" name="adminPassword" placeholder="Chave de Acesso" required>
             <button type="submit">Entrar</button>
         </form>
+
+        <script>
+            document.querySelector('form').addEventListener('submit', function () {
+                const pass = document.querySelector('input[name="adminPassword"]').value;
+                sessionStorage.setItem('authToken', btoa('admin:' + pass));
+            });
+        </script>
     </div>
 </body>
 <style>
